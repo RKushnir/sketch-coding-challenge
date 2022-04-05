@@ -6,7 +6,7 @@ defmodule CanvasServer.Drawing do
   import Ecto.Query, warn: false
   alias CanvasServer.Repo
 
-  alias CanvasServer.Drawing.Canvas
+  alias CanvasServer.Drawing.{Canvas, Rectangle}
 
   @doc """
   Gets a single canvas.
@@ -35,5 +35,20 @@ defmodule CanvasServer.Drawing do
   """
   def create_canvas!() do
     Repo.insert!(%Canvas{})
+  end
+
+  @doc """
+  Creates a rectangle associated with the given canvas.
+
+  ## Examples
+
+      iex> draw_rectangle!()
+      {:ok, %Rectangle{}}
+
+  """
+  def draw_rectangle(canvas, attrs) do
+    canvas
+    |> Rectangle.changeset(attrs)
+    |> Repo.insert()
   end
 end
