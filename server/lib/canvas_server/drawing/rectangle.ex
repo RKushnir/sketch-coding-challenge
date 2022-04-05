@@ -1,4 +1,12 @@
 defmodule CanvasServer.Drawing.Rectangle do
+  @moduledoc """
+  The schema for a rectangle.
+  Contains the coordinates and sizes of a rectangle, the fill and the outline character.
+  All coordinates and sizes need to be non-negative integers.
+  Fill and outline character must be single-character strings,
+  and at least one of them must be present.
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
 
