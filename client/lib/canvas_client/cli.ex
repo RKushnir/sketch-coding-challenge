@@ -2,6 +2,7 @@ defmodule CanvasClient.CLI do
   @moduledoc """
   Module for parsing command-line arguments and dispatching the requests.
   """
+  alias CanvasClient.HTTPClient
 
   @help_message """
   Usage:
@@ -18,8 +19,11 @@ defmodule CanvasClient.CLI do
   end
 
   def main(["new"]) do
-    canvas_id = "abcdef-12345"
-    IO.puts("Created canvas with id #{canvas_id}.")
+    with {:ok, canvas} <- HTTPClient.create_canvas() do
+      IO.puts("Created canvas with id #{canvas.id}.")
+    else
+      _error -> IO.puts("Failed to create a canvas.")
+    end
   end
 
   def main(_args) do
