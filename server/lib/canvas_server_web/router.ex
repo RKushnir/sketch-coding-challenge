@@ -17,7 +17,9 @@ defmodule CanvasServerWeb.Router do
   scope "/", CanvasServerWeb do
     pipe_through :api
 
-    resources "/canvases", CanvasController, only: [:create, :show]
+    resources "/canvases", CanvasController, only: [:create, :show] do
+      resources "/rectangles", RectangleController, only: [:create]
+    end
   end
 
   # Other scopes may use custom stacks.
