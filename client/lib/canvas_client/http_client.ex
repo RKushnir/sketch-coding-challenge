@@ -2,7 +2,24 @@ defmodule CanvasClient.HTTPClient do
   alias CanvasClient.Canvas
 
   def create_canvas do
-    canvas = %Canvas{id: "636d3763-48ee-49d1-8dcb-9e1931e930b7"}
-    {:ok, canvas}
+    case Tesla.post(client(), "/canvases", %{}) do
+      {:ok, %Tesla.Env{body: %{"id" => canvas_id}}} ->
+        canvas = %Canvas{id: canvas_id}
+        {:ok, canvas}
+
+      _error ->
+        :error
+    end
+  end
+
+  defp client do
+    base_url = System.get_env("CANVAS_SERVER_URL", "http://localhost:4000")
+
+    middleware = [
+      {Tesla.Middleware.BaseUrl, base_url},
+      Tesla.Middleware.JSON
+    ]
+
+    Tesla.client(middleware)
   end
 end
