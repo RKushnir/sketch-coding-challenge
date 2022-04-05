@@ -1,8 +1,13 @@
 defmodule CanvasClient.CLITest do
   use ExUnit.Case
+
+  alias CanvasClient.Canvas
   alias CanvasClient.CLI
+
   import ExUnit.CaptureIO
-  import Tesla.Mock
+  import Mox
+
+  setup :verify_on_exit!
 
   test "prints an error message for unsupported commands" do
     assert capture_io(fn -> CLI.main(["unknown", "-c", "ommand"]) end) =~ ~r/not supported/
@@ -13,9 +18,8 @@ defmodule CanvasClient.CLITest do
   end
 
   test "creates a new canvas for the new command" do
-    mock(fn
-      %{method: :post, url: "http://localhost:4000/canvases"} ->
-        json(%{id: "8c375cd2-eeaa-42b7-9295-c790129a6598"})
+    expect(CanvasClient.HTTPClientMock, :create_canvas, fn ->
+      {:ok, %Canvas{id: "8c375cd2-eeaa-42b7-9295-c790129a6598"}}
     end)
 
     assert capture_io(fn -> CLI.main(["new"]) end) =~

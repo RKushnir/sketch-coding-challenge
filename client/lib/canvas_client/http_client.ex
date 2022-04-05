@@ -1,6 +1,8 @@
 defmodule CanvasClient.HTTPClient do
+  @behaviour CanvasClient.HTTPClientBehaviour
   alias CanvasClient.Canvas
 
+  @impl CanvasClient.HTTPClientBehaviour
   def create_canvas do
     case Tesla.post(client(), "/canvases", %{}) do
       {:ok, %Tesla.Env{body: %{"id" => canvas_id}}} ->
