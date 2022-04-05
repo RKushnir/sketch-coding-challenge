@@ -5,11 +5,14 @@ defmodule CanvasServerWeb.CanvasController do
   def create(conn, _params) do
     canvas = Drawing.create_canvas!()
 
-    render(conn, "show.json", canvas: canvas)
+    render(conn, "create.json", canvas: canvas)
   end
 
   def show(conn, params) do
-    canvas = Drawing.get_canvas!(params["id"])
+    canvas =
+      params["id"]
+      |> Drawing.get_canvas!()
+      |> Drawing.preload_rectangles()
 
     render(conn, "show.json", canvas: canvas)
   end

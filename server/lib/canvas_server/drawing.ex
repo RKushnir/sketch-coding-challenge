@@ -51,4 +51,18 @@ defmodule CanvasServer.Drawing do
     |> Rectangle.changeset(attrs)
     |> Repo.insert()
   end
+
+  @doc """
+  Returns the given canvas with preloaded rectangles.
+
+  ## Examples
+
+      iex> canvas = create_canvas!()
+      iex> preload_rectangles!(canvas)
+      %Canvas{}
+
+  """
+  def preload_rectangles(%Canvas{} = canvas) do
+    Repo.preload(canvas, :rectangles)
+  end
 end
