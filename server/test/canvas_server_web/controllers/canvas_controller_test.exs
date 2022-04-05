@@ -1,5 +1,6 @@
 defmodule CanvasServerWeb.CanvasControllerTest do
   use CanvasServerWeb.ConnCase
+  alias CanvasServer.Drawing
 
   test "POST /canvases", %{conn: conn} do
     conn = post(conn, "/canvases")
@@ -8,8 +9,10 @@ defmodule CanvasServerWeb.CanvasControllerTest do
   end
 
   test "GET /canvases/:id", %{conn: conn} do
-    conn = get(conn, "/canvases/d41fcb72-291b-4033-8639-c59a06c2c0cb")
+    %{id: canvas_id} = Drawing.create_canvas!()
+
+    conn = get(conn, "/canvases/#{canvas_id}")
     response = json_response(conn, 200)
-    assert %{"id" => "d41fcb72-291b-4033-8639-c59a06c2c0cb"} = response
+    assert %{"id" => ^canvas_id} = response
   end
 end
