@@ -1,3 +1,3 @@
-defmodule CanvasServerWeb.PageViewTest do
+defmodule CanvasServerWeb.CanvasViewTest do
   use CanvasServerWeb.ConnCase, async: true
 end
