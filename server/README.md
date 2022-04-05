@@ -1,4 +1,12 @@
-# CanvasServer
+# Canvas Server
+
+## Setup
+
+For simplicity, there is an assumption that (in dev and test mode) you're running the server
+on a machine with PostgreSQL server installed and listening on the default port (5432).
+It should allow "trust" authentication with your current system user, which is the default behavior.
+Should this assumption not apply, you need to specify your database connection properties
+in the `config/dev.exs` file.
 
 To start your Phoenix server:
 

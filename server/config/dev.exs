@@ -2,8 +2,7 @@ import Config
 
 # Configure your database
 config :canvas_server, CanvasServer.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: System.fetch_env!("USER"),
   hostname: "localhost",
   database: "canvas_server_dev",
   show_sensitive_data_on_connection_error: true,

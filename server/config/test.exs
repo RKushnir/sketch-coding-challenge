@@ -6,8 +6,7 @@ import Config
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :canvas_server, CanvasServer.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: System.fetch_env!("USER"),
   hostname: "localhost",
   database: "canvas_server_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
