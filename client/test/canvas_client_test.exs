@@ -189,10 +189,14 @@ defmodule CanvasClient.CLITest do
         {:ok, canvas}
       end)
 
-      assert capture_io(fn ->
-               CLI.main(["render", "8c375cd2-eeaa-42b7-9295-c790129a6598"])
-             end) =~
-               ~r/Canvas rendered/
+      output =
+        capture_io(fn ->
+          CLI.main(["render", "8c375cd2-eeaa-42b7-9295-c790129a6598"])
+        end)
+
+      assert String.contains?(output, "   @@@@@                ")
+      assert String.contains?(output, "   @XXX@  XXXXXXXXXXXXXX")
+      assert String.contains?(output, "   @@@@@  XOOOOOOOOOOOOX")
     end
 
     test "prints an error message if the given canvas could not be found" do
