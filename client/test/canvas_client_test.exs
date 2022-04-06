@@ -168,16 +168,16 @@ defmodule CanvasClient.CLITest do
           id: canvas_id,
           rectangles: [
             %Rectangle{
-              offset_left: 3,
               offset_top: 2,
+              offset_left: 3,
               width: 5,
               height: 3,
               outline_character: "@",
               fill_character: "X"
             },
             %Rectangle{
-              offset_left: 10,
               offset_top: 3,
+              offset_left: 10,
               width: 14,
               height: 6,
               outline_character: "X",
