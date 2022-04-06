@@ -1,5 +1,5 @@
 defmodule CanvasClient.HTTPClientTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias CanvasClient.{Canvas, HTTPClient, Rectangle}
   import Tesla.Mock
 

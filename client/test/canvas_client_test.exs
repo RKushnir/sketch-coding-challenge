@@ -1,5 +1,5 @@
 defmodule CanvasClient.CLITest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias CanvasClient.{Canvas, Rectangle}
   alias CanvasClient.CLI

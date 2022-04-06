@@ -1,5 +1,5 @@
 defmodule CanvasClient.RendererTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias CanvasClient.{Rectangle, Renderer}
 
   test "renders a rectangle with fill character and no outline character" do
