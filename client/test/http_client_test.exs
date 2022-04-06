@@ -1,6 +1,6 @@
 defmodule CanvasClient.HTTPClientTest do
   use ExUnit.Case
-  alias CanvasClient.{Canvas, HTTPClient}
+  alias CanvasClient.{Canvas, HTTPClient, Rectangle}
   import Tesla.Mock
 
   describe "create_canvas/0" do
@@ -104,6 +104,73 @@ defmodule CanvasClient.HTTPClientTest do
                  canvas_id: "8c375cd2-eeaa-42b7-9295-c790129a6598",
                  offset_top: 3
                })
+    end
+  end
+
+  describe "fetch_canvas/1" do
+    test "returns a canvas given its id" do
+      mock(fn
+        %{
+          method: :get,
+          url: "http://localhost:4000/canvases/8c375cd2-eeaa-42b7-9295-c790129a6598"
+        } ->
+          json(%{
+            "id" => "8c375cd2-eeaa-42b7-9295-c790129a6598",
+            "rectangles" => [
+              %{
+                offset_top: 1,
+                offset_left: 3,
+                height: 5,
+                width: 7,
+                fill_character: "%",
+                outline_character: "@"
+              },
+              %{
+                offset_top: 2,
+                offset_left: 4,
+                height: 6,
+                width: 8,
+                fill_character: "?"
+              }
+            ]
+          })
+      end)
+
+      assert {:ok, %Canvas{} = canvas} =
+               HTTPClient.fetch_canvas("8c375cd2-eeaa-42b7-9295-c790129a6598")
+
+      assert canvas.id == "8c375cd2-eeaa-42b7-9295-c790129a6598"
+
+      assert canvas.rectangles == [
+               %Rectangle{
+                 offset_top: 1,
+                 offset_left: 3,
+                 height: 5,
+                 width: 7,
+                 fill_character: "%",
+                 outline_character: "@"
+               },
+               %Rectangle{
+                 offset_top: 2,
+                 offset_left: 4,
+                 height: 6,
+                 width: 8,
+                 fill_character: "?"
+               }
+             ]
+    end
+
+    test "returns error tuple with :canvas_not_found if the canvas id is not valid" do
+      mock(fn
+        %{
+          method: :get,
+          url: "http://localhost:4000/canvases/8c375cd2-eeaa-42b7-9295-c790129a6598"
+        } ->
+          json(%{}, status: 404)
+      end)
+
+      assert {:error, :canvas_not_found} =
+               HTTPClient.fetch_canvas("8c375cd2-eeaa-42b7-9295-c790129a6598")
     end
   end
 end

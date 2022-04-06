@@ -1,6 +1,6 @@
 defmodule CanvasClient.HTTPClient do
   @behaviour CanvasClient.HTTPClientBehaviour
-  alias CanvasClient.Canvas
+  alias CanvasClient.{Canvas, Rectangle}
 
   @impl CanvasClient.HTTPClientBehaviour
   def create_canvas do
@@ -45,12 +45,37 @@ defmodule CanvasClient.HTTPClient do
 
   @impl CanvasClient.HTTPClientBehaviour
   def fetch_canvas(canvas_id) do
-    canvas = %Canvas{
-      id: canvas_id,
-      rectangles: []
-    }
+    case Tesla.get(client(), "/canvases/#{canvas_id}") do
+      {:ok, %Tesla.Env{status: 200, body: body}} ->
+        canvas = deserialize_canvas(body)
+        {:ok, canvas}
 
-    {:ok, canvas}
+      {:ok, %Tesla.Env{status: 404}} ->
+        {:error, :canvas_not_found}
+
+      _error ->
+        {:error, :unknown_error}
+    end
+  end
+
+  defp deserialize_canvas(canvas_attrs) do
+    rectangles = Enum.map(canvas_attrs["rectangles"], &deserialize_rectangle/1)
+
+    %Canvas{
+      id: canvas_attrs["id"],
+      rectangles: rectangles
+    }
+  end
+
+  defp deserialize_rectangle(rectangle_attrs) do
+    %Rectangle{
+      offset_top: rectangle_attrs["offset_top"],
+      offset_left: rectangle_attrs["offset_left"],
+      height: rectangle_attrs["height"],
+      width: rectangle_attrs["width"],
+      fill_character: rectangle_attrs["fill_character"],
+      outline_character: rectangle_attrs["outline_character"]
+    }
   end
 
   defp client do
