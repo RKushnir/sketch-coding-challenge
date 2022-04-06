@@ -11,9 +11,10 @@ defmodule CanvasClient.Commands.Help do
         -w, --width x\tWidth (required).
         -f, --fill x\tFill character (required if the outline character is not provided).
         -o, --outline x\tOutline character (required if the fill character is not provided).
+    canvas_client render <canvas_id>\tRenders the canvas to the screen.
   """
 
   def run(_args) do
-    IO.puts(@help_message)
+    IO.write(@help_message)
   end
 end
