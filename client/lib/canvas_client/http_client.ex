@@ -1,4 +1,8 @@
 defmodule CanvasClient.HTTPClient do
+  @moduledoc """
+  Client for communicating with the server.
+  """
+
   @behaviour CanvasClient.HTTPClientBehaviour
   alias CanvasClient.{Canvas, Rectangle}
 
