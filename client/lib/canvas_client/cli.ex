@@ -21,6 +21,10 @@ defmodule CanvasClient.CLI do
     Commands.DrawRectangle.run(args)
   end
 
+  def main(["render" | args]) do
+    Commands.RenderCanvas.run(args)
+  end
+
   def main(_args) do
     IO.puts(@unknown_command_message)
   end

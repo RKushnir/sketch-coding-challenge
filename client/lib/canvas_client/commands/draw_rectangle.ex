@@ -30,7 +30,11 @@ defmodule CanvasClient.Commands.DrawRectangle do
 
       {:invalid_arguments, invalid_arg_names} ->
         invalid_arg_string = Enum.join(invalid_arg_names, ", ")
-        IO.puts("The following argument(s) are missing or invalid: #{invalid_arg_string}.")
+
+        IO.write("""
+        The following argument(s) are missing or invalid: #{invalid_arg_string}.
+        Please, use `canvas_client help` to see usage instructions.
+        """)
     end
   end
 

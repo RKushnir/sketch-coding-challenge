@@ -43,6 +43,16 @@ defmodule CanvasClient.HTTPClient do
     end
   end
 
+  @impl CanvasClient.HTTPClientBehaviour
+  def fetch_canvas(canvas_id) do
+    canvas = %Canvas{
+      id: canvas_id,
+      rectangles: []
+    }
+
+    {:ok, canvas}
+  end
+
   defp client do
     base_url = System.get_env("CANVAS_SERVER_URL", "http://localhost:4000")
 

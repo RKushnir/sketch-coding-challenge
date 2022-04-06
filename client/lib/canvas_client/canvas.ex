@@ -1,3 +1,3 @@
 defmodule CanvasClient.Canvas do
-  defstruct [:id]
+  defstruct [:id, rectangles: []]
 end

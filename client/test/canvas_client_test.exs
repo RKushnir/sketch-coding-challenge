@@ -1,7 +1,7 @@
 defmodule CanvasClient.CLITest do
   use ExUnit.Case
 
-  alias CanvasClient.Canvas
+  alias CanvasClient.{Canvas, Rectangle}
   alias CanvasClient.CLI
 
   import ExUnit.CaptureIO
@@ -13,20 +13,24 @@ defmodule CanvasClient.CLITest do
     assert capture_io(fn -> CLI.main(["unknown", "-c", "ommand"]) end) =~ ~r/not supported/
   end
 
-  test "prints the help message for the help command" do
-    assert capture_io(fn -> CLI.main(["help", "whatever"]) end) =~ ~r/Usage/
+  describe "command: help" do
+    test "prints the help message" do
+      assert capture_io(fn -> CLI.main(["help", "whatever"]) end) =~ ~r/Usage/
+    end
   end
 
-  test "creates a new canvas for the new command" do
-    expect(CanvasClient.HTTPClientMock, :create_canvas, fn ->
-      {:ok, %Canvas{id: "8c375cd2-eeaa-42b7-9295-c790129a6598"}}
-    end)
+  describe "command: new" do
+    test "creates a new canvas" do
+      expect(CanvasClient.HTTPClientMock, :create_canvas, fn ->
+        {:ok, %Canvas{id: "8c375cd2-eeaa-42b7-9295-c790129a6598"}}
+      end)
 
-    assert capture_io(fn -> CLI.main(["new"]) end) =~
-             ~r/Created a canvas with id 8c375cd2-eeaa-42b7-9295-c790129a6598/
+      assert capture_io(fn -> CLI.main(["new"]) end) =~
+               ~r/Created a canvas with id 8c375cd2-eeaa-42b7-9295-c790129a6598/
+    end
   end
 
-  describe "drawing a rectangle" do
+  describe "command: draw" do
     test "draws a rectangle on the canvas" do
       expect(CanvasClient.HTTPClientMock, :draw_rectangle, fn attrs ->
         assert attrs.canvas_id == "8c375cd2-eeaa-42b7-9295-c790129a6598"
@@ -152,6 +156,57 @@ defmodule CanvasClient.CLITest do
                ])
              end) =~
                ~r/Unexpected error happened when contacting the server/
+    end
+  end
+
+  describe "command: render" do
+    test "renders the canvas" do
+      stub(CanvasClient.HTTPClientMock, :fetch_canvas, fn canvas_id ->
+        assert canvas_id == "8c375cd2-eeaa-42b7-9295-c790129a6598"
+
+        canvas = %Canvas{
+          id: canvas_id,
+          rectangles: [
+            %Rectangle{
+              offset_left: 3,
+              offset_top: 2,
+              width: 5,
+              height: 3,
+              outline_character: "@",
+              fill_character: "X"
+            },
+            %Rectangle{
+              offset_left: 10,
+              offset_top: 3,
+              width: 14,
+              height: 6,
+              outline_character: "X",
+              fill_character: "O"
+            }
+          ]
+        }
+
+        {:ok, canvas}
+      end)
+
+      assert capture_io(fn ->
+               CLI.main(["render", "8c375cd2-eeaa-42b7-9295-c790129a6598"])
+             end) =~
+               ~r/Canvas rendered/
+    end
+
+    test "prints an error message if the given canvas could not be found" do
+      stub(CanvasClient.HTTPClientMock, :fetch_canvas, fn _canvas_id ->
+        {:error, :canvas_not_found}
+      end)
+
+      assert capture_io(fn ->
+               CLI.main([
+                 "render",
+                 "8c375cd2-eeaa-42b7-9295-c790129a6598"
+               ])
+             end) =~
+               ~r/There is no canvas with the given id/
     end
   end
 end
