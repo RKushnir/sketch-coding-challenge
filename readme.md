@@ -22,6 +22,66 @@ To run the tests:
   * Create and migrate the database with `mix ecto.setup`
   * Run `mix test`
 
+## API
+
+To test-drive the app, I recommend using the interactive version of the client, which you can find
+in the `interactive-client` branch (see below). It's probably more convenient than making direct API calls.
+
+The API endpoints are described below. The data is exchanged in the JSON format,
+so don't forget to always provide the appropriate `Accept` and `Content-Type` HTTP headers.
+
+### Create a new canvas
+Request: `POST /canvases`
+
+Example response: `{"id": "e15ea634-094f-46a4-8cff-cddbbcd03505"}`
+
+### Draw a rectangle
+Request: POST /canvases/:id/rectangles
+
+Example request data:
+
+```json
+{
+  "offset_top": 2,
+  "offset_left": 3,
+  "height": 5,
+  "width": 3,
+  "fill_character": "X",
+  "outline_character": "@"
+}
+```
+
+Response: empty, only status 200
+
+### Fetch a canvas
+Request: `GET /canvases/:id`
+
+Example response:
+
+```json
+{
+  "id": "e15ea634-094f-46a4-8cff-cddbbcd03505",
+  "rectangles": [
+    {
+      "offset_top": 2,
+      "offset_left": 3,
+      "height": 5,
+      "width": 3,
+      "fill_character": "X",
+      "outline_character": "@"
+    },
+    {
+      "offset_top": 3,
+      "offset_left": 10,
+      "height": 14,
+      "width": 6,
+      "fill_character": "O",
+      "outline_character": "X"
+    }
+  ]
+}
+```
+
 # Client
 
 By default, the client expects the server to be available at `http://localhost:4000`.
